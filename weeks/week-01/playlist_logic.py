@@ -56,7 +56,6 @@ def normalize_song(raw: Song) -> Song:
         "tags": tags,
     }
 
-
 def classify_song(song: Song, profile: Dict[str, object]) -> str:
     """Return a mood label given a song and user profile."""
     energy = song.get("energy", 0)
@@ -71,14 +70,16 @@ def classify_song(song: Song, profile: Dict[str, object]) -> str:
     chill_keywords = ["lofi", "ambient", "sleep"]
 
     is_hype_keyword = any(k in genre for k in hype_keywords)
-    is_chill_keyword = any(k in title for k in chill_keywords)
+    is_chill_keyword = any(k in genre or k in title for k in chill_keywords)
 
-    if genre == favorite_genre or energy >= hype_min_energy or is_hype_keyword:
+    is_hype = energy >= hype_min_energy and (genre == favorite_genre or is_hype_keyword)
+    is_chill = energy <= chill_max_energy and is_chill_keyword
+
+    if is_hype:
         return "Hype"
-    if energy <= chill_max_energy or is_chill_keyword:
+    if is_chill:
         return "Chill"
     return "Mixed"
-
 
 def build_playlists(songs: List[Song], profile: Dict[str, object]) -> PlaylistMap:
     """Group songs into playlists based on mood and profile."""
