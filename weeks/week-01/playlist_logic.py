@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional, Tuple
-
+import random
 Song = Dict[str, object]
 PlaylistMap = Dict[str, List[Song]]
 
@@ -183,17 +183,18 @@ def lucky_pick(
         songs = playlists.get("Hype", [])
     elif mode == "chill":
         songs = playlists.get("Chill", [])
+    elif mode == "mixed":
+        songs = playlists.get("Mixed", [])
     else:
-        songs = playlists.get("Hype", []) + playlists.get("Chill", [])
+        songs = playlists.get("Hype", []) + playlists.get("Chill", []) + playlists.get("Mixed", [])
 
     return random_choice_or_none(songs)
 
 
+
 def random_choice_or_none(songs: List[Song]) -> Optional[Song]:
     """Return a random song or None."""
-    import random
-
-    return random.choice(songs)
+    return None if not songs else random.choice(songs)
 
 
 def history_summary(history: List[Song]) -> Dict[str, int]:
